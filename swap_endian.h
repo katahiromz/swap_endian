@@ -47,7 +47,9 @@
 
 /* Finish endianness detection at compile-time */
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
-    #if defined(__WINDOWS__) || defined(__WINDOWS_386__) || defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
+    #if defined(_WIN64) || defined(__x86_64__) || defined(__amd64__) || defined(_M_AMD64)
+        #define __LITTLE_ENDIAN__ 1
+    #if defined(__WINDOWS__) || defined(__WINDOWS_386__) || defined(_WIN32) || defined(__i386__)
         #define __LITTLE_ENDIAN__ 1
     #elif defined(__DOS__) || defined(M_I86)
         #define __LITTLE_ENDIAN__ 1
