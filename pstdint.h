@@ -7,7 +7,7 @@
     #include <cstdint>
 #elif __STDC_VERSION__ >= 199901L /* C99 */
     #include <stdint.h>
-#elif defined(_WIN32) && !defined(WONVER)
+#elif (defined(__WINDOWS_386__) || defined(_WIN32)) && !defined(WONVER)
     typedef signed char int8_t;
     typedef short int16_t;
     typedef int int32_t;
