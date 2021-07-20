@@ -21,7 +21,7 @@
 #endif
 
 /* Check __BYTE_ORDER and __BYTE_ORDER__ macros */
-#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
+#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__BIG_WORD_ENDIAN__)
     #ifdef __BYTE_ORDER
         #if (__BYTE_ORDER == __LITTLE_ENDIAN)
             #define __LITTLE_ENDIAN__ 1
@@ -55,7 +55,7 @@
 #endif
 
 /* Finish endianness detection at compile-time */
-#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
+#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__BIG_WORD_ENDIAN__)
     #if defined(_WIN64) || defined(__x86_64__) || defined(__x86_64) || defined(__amd64__)
         #define __LITTLE_ENDIAN__ 1
     #elif defined(__ia64__) || defined(__ia64) || defined(__itanium__)
@@ -73,7 +73,7 @@
     #elif defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB)
         #define __BIG_ENDIAN__ 1
     #else
-        #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, __PDP_ENDIAN__, __BI_ENDIAN__ or __HONEYWELL_ENDIAN__.
+        #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, __PDP_ENDIAN__, __BI_ENDIAN__ or __BIG_WORD_ENDIAN__.
     #endif
 #endif
 
@@ -115,7 +115,7 @@ static __inline ENDIANNESS endianness(void)
     #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE
 #elif defined(__BIG_ENDIAN__)
     #define COMPILETIME_ENDIANNESS ENDIAN_BIG
-#elif defined(__HONEYWELL_ENDIAN__)
+#elif defined(__BIG_WORD_ENDIAN__)
     #define COMPILETIME_ENDIANNESS ENDIAN_BIG_WORD
 #elif defined(__PDP_ENDIAN__)
     #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE_WORD
