@@ -1,6 +1,7 @@
-// swap_endian.h by katahiromz
+/* swap_endian.h by katahiromz */
 #pragma once
 
+/* Include <stdint.h> or something */
 #if __cplusplus >= 201103L /* C++11 */
     #include <cstdint>
 #elif __STDC_VERSION__ >= 199901L /* C99 */
@@ -9,14 +10,20 @@
     #include "pstdint.h"
 #endif
 
+/* Include endian header */
 #if defined(__linux__) || defined(__ANDROID__)
     #include <endian.h>
 #elif defined(__Apple__)
     #include <machine/endian.h>
-#elif defined(__FreeBSD__) || defined(__NetBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
     #include <sys/endian.h>
+#elif defined(__arm__) || defined(__powerpc__) || defined(__powerpc64__)
+    #ifndef __BI_ENDIAN__
+        #define __BI_ENDIAN__
+    #endif
 #endif
 
+/* Check __BYTE_ORDER macro */
 #ifdef __BYTE_ORDER
     #if (__BYTE_ORDER == __LITTLE_ENDIAN) && !defined(__LITTLE_ENDIAN__)
         #define __LITTLE_ENDIAN__ 1
@@ -27,17 +34,26 @@
     #endif
 #endif
 
-#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__)
-    #if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+/* Finish endianness detection at compile-time */
+#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__)
+    #if defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
+        #define __LITTLE_ENDIAN__ 1
+    #elif defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__)
+        #define __LITTLE_ENDIAN__ 1
+    #elif defined(_MIPSEL) || defined(__MIPSEL) || defined(__MIPSEL__)
+        #define __LITTLE_ENDIAN__ 1
+    #elif defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__)
+        #define __BIG_ENDIAN__ 1
+    #elif defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB)
+        #define __BIG_ENDIAN__ 1
+    #elif defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         #define __LITTLE_ENDIAN__ 1
     #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
         #define __BIG_ENDIAN__ 1
     #elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
         #define __PDP_ENDIAN__ 1
-    #elif defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
-        #define __LITTLE_ENDIAN__ 1
     #else
-        #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, or __PDP_ENDIAN__.
+        #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, __PDP_ENDIAN__ or __BI_ENDIAN__.
     #endif
 #endif
 
@@ -95,4 +111,43 @@ static __inline uint64_t swap_endian_64(uint64_t value)
         const uint32_t hi = (uint32_t)(value >> 32);
         return ((uint64_t)swap_endian_32(lo) << 32) | swap_endian_32(hi);
     #endif
+}
+
+/* See also: https://sourceforge.net/p/predef/wiki/Endianness/ */
+enum ENDIAN_TYPE
+{
+    ENDIAN_UNKNOWN,
+    ENDIAN_BIG,
+    ENDIAN_LITTLE,
+    ENDIAN_BIG_WORD,    /* Middle-endian, Honeywell 316 style */
+    ENDIAN_LITTLE_WORD  /* Middle-endian, PDP-11 style */
+};
+
+static __inline ENDIAN_TYPE endianness(void)
+{
+#ifdef __LITTLE_ENDIAN__
+    return ENDIAN_LITTLE;
+#elif defined(__BIG_ENDIAN__)
+    return ENDIAN_BIG;
+#else
+    union
+    {
+        uint32_t value;
+        uint8_t data[sizeof(uint32_t)];
+    } number;
+
+    number.data[0] = 0x00;
+    number.data[1] = 0x01;
+    number.data[2] = 0x02;
+    number.data[3] = 0x03;
+
+    switch (number.value)
+    {
+    case 0x00010203: return ENDIAN_BIG;
+    case 0x03020100: return ENDIAN_LITTLE;
+    case 0x02030001: return ENDIAN_BIG_WORD;
+    case 0x01000302: return ENDIAN_LITTLE_WORD;
+    default: return ENDIAN_UNKNOWN;
+    }
+#endif
 }
