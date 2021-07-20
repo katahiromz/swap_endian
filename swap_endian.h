@@ -17,6 +17,16 @@
     #include <sys/endian.h>
 #endif
 
+#ifdef __BYTE_ORDER
+    #if (__BYTE_ORDER == __LITTLE_ENDIAN) && !defined(__LITTLE_ENDIAN__)
+        #define __LITTLE_ENDIAN__ 1
+    #elif  (__BYTE_ORDER == __BIG_ENDIAN) && !defined(__BIG_ENDIAN__)
+        #define __BIG_ENDIAN__ 1
+    #elif  (__BYTE_ORDER == __PDP_ENDIAN) && !defined(__PDP_ENDIAN__)
+        #define __PDP_ENDIAN__ 1
+    #endif
+#endif
+
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__)
     #if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         #define __LITTLE_ENDIAN__ 1
