@@ -11,7 +11,7 @@
     #include "pstdint.h"
 #endif
 
-/* Include endian header */
+/* Include endian header or define __BIG_ENDIAN__ */
 #if defined(__linux__) || defined(__ANDROID__)
     #include <endian.h>
 #elif defined(__Apple__)
@@ -24,7 +24,7 @@
     #endif
 #endif
 
-/* Check __BYTE_ORDER macro */
+/* Check __BYTE_ORDER and __BYTE_ORDER__ macros */
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
     #ifdef __BYTE_ORDER
         #if (__BYTE_ORDER == __LITTLE_ENDIAN)
