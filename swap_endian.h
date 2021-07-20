@@ -62,10 +62,55 @@
     #endif
 #endif
 
+typedef enum ENDIANNESS
+{
+    ENDIAN_UNKNOWN,
+    ENDIAN_BIG,
+    ENDIAN_LITTLE,
+    ENDIAN_BIG_WORD,   /* Middle-endian, Honeywell 316 style */
+    ENDIAN_LITTLE_WORD /* Middle-endian, PDP-11 style */
+} ENDIANNESS;
+
+/* endianness() function */
+static __inline ENDIANNESS endianness(void)
+{
+    union
+    {
+        uint32_t value;
+        uint8_t data[sizeof(uint32_t)];
+    } number;
+
+    number.data[0] = 0x00;
+    number.data[1] = 0x01;
+    number.data[2] = 0x02;
+    number.data[3] = 0x03;
+
+    switch (number.value)
+    {
+    case 0x00010203: return ENDIAN_BIG;
+    case 0x03020100: return ENDIAN_LITTLE;
+    case 0x02030001: return ENDIAN_BIG_WORD;
+    case 0x01000302: return ENDIAN_LITTLE_WORD;
+    default: return ENDIAN_UNKNOWN;
+    }
+}
+
+/* COMPILETIME_ENDIANNESS macro */
+#ifdef __LITTLE_ENDIAN__
+    #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE
+#elif defined(__BIG_ENDIAN__)
+    #define COMPILETIME_ENDIANNESS ENDIAN_BIG
+#elif defined(__HONEYWELL_ENDIAN__)
+    #define COMPILETIME_ENDIANNESS ENDIAN_BIG_WORD
+#elif defined(__PDP_ENDIAN__)
+    #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE_WORD
+#else
+    #define COMPILETIME_ENDIANNESS endianness()
+#endif
+
 /*
  * swap_endian_8/16/32/64 inline functions
  */
-
 static __inline uint8_t swap_endian_8(uint8_t value)
 {
     return value;
@@ -122,50 +167,4 @@ static __inline uint16_t swap_endian_16(uint16_t value)
             return ((uint64_t)swap_endian_32(lo) << 32) | swap_endian_32(hi);
         #endif
     }
-#endif
-
-typedef enum ENDIANNESS
-{
-    ENDIAN_UNKNOWN,
-    ENDIAN_BIG,
-    ENDIAN_LITTLE,
-    ENDIAN_BIG_WORD,    /* Middle-endian, Honeywell 316 style */
-    ENDIAN_LITTLE_WORD  /* Middle-endian, PDP-11 style */
-} ENDIANNESS;
-
-/* endianness() function */
-static __inline ENDIANNESS endianness(void)
-{
-    union
-    {
-        uint32_t value;
-        uint8_t data[sizeof(uint32_t)];
-    } number;
-
-    number.data[0] = 0x00;
-    number.data[1] = 0x01;
-    number.data[2] = 0x02;
-    number.data[3] = 0x03;
-
-    switch (number.value)
-    {
-    case 0x00010203: return ENDIAN_BIG;
-    case 0x03020100: return ENDIAN_LITTLE;
-    case 0x02030001: return ENDIAN_BIG_WORD;
-    case 0x01000302: return ENDIAN_LITTLE_WORD;
-    default: return ENDIAN_UNKNOWN;
-    }
-}
-
-/* COMPILETIME_ENDIANNESS macro */
-#ifdef __LITTLE_ENDIAN__
-    #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE
-#elif defined(__BIG_ENDIAN__)
-    #define COMPILETIME_ENDIANNESS ENDIAN_BIG
-#elif defined(__HONEYWELL_ENDIAN__)
-    #define COMPILETIME_ENDIANNESS ENDIAN_BIG_WORD
-#elif defined(__PDP_ENDIAN__)
-    #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE_WORD
-#else
-    #define COMPILETIME_ENDIANNESS endianness()
 #endif
