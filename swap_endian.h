@@ -120,14 +120,14 @@ static __inline uint64_t swap_endian_64(uint64_t value)
     #endif
 }
 
-enum ENDIANNESS
+typedef enum ENDIANNESS
 {
     ENDIAN_UNKNOWN,
     ENDIAN_BIG,
     ENDIAN_LITTLE,
     ENDIAN_BIG_WORD,    /* Middle-endian, Honeywell 316 style */
     ENDIAN_LITTLE_WORD  /* Middle-endian, PDP-11 style */
-};
+} ENDIANNESS;
 
 /* endianness() function */
 static __inline ENDIANNESS endianness(void)
