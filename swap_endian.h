@@ -24,18 +24,20 @@
 #endif
 
 /* Check __BYTE_ORDER macro */
-#ifdef __BYTE_ORDER
-    #if (__BYTE_ORDER == __LITTLE_ENDIAN) && !defined(__LITTLE_ENDIAN__)
-        #define __LITTLE_ENDIAN__ 1
-    #elif  (__BYTE_ORDER == __BIG_ENDIAN) && !defined(__BIG_ENDIAN__)
-        #define __BIG_ENDIAN__ 1
-    #elif  (__BYTE_ORDER == __PDP_ENDIAN) && !defined(__PDP_ENDIAN__)
-        #define __PDP_ENDIAN__ 1
+#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
+    #ifdef __BYTE_ORDER
+        #if (__BYTE_ORDER == __LITTLE_ENDIAN)
+            #define __LITTLE_ENDIAN__ 1
+        #elif  (__BYTE_ORDER == __BIG_ENDIAN)
+            #define __BIG_ENDIAN__ 1
+        #elif  (__BYTE_ORDER == __PDP_ENDIAN)
+            #define __PDP_ENDIAN__ 1
+        #endif
     #endif
 #endif
 
 /* Finish endianness detection at compile-time */
-#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__)
+#if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
     #if defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
         #define __LITTLE_ENDIAN__ 1
     #elif defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__)
@@ -53,7 +55,7 @@
     #elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
         #define __PDP_ENDIAN__ 1
     #else
-        #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, __PDP_ENDIAN__ or __BI_ENDIAN__.
+        #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, __PDP_ENDIAN__, __BI_ENDIAN__ or __HONEYWELL_ENDIAN__.
     #endif
 #endif
 
@@ -114,7 +116,7 @@ static __inline uint64_t swap_endian_64(uint64_t value)
 }
 
 /* See also: https://sourceforge.net/p/predef/wiki/Endianness/ */
-enum ENDIAN_TYPE
+enum ENDIAN
 {
     ENDIAN_UNKNOWN,
     ENDIAN_BIG,
@@ -123,13 +125,8 @@ enum ENDIAN_TYPE
     ENDIAN_LITTLE_WORD  /* Middle-endian, PDP-11 style */
 };
 
-static __inline ENDIAN_TYPE endianness(void)
+static __inline ENDIAN endianness(void)
 {
-#ifdef __LITTLE_ENDIAN__
-    return ENDIAN_LITTLE;
-#elif defined(__BIG_ENDIAN__)
-    return ENDIAN_BIG;
-#else
     union
     {
         uint32_t value;
@@ -149,5 +146,16 @@ static __inline ENDIAN_TYPE endianness(void)
     case 0x01000302: return ENDIAN_LITTLE_WORD;
     default: return ENDIAN_UNKNOWN;
     }
-#endif
 }
+
+#ifdef __LITTLE_ENDIAN__
+    #define COMPILETIME_ENDIAN ENDIAN_LITTLE
+#elif defined(__BIG_ENDIAN__)
+    #define COMPILETIME_ENDIAN ENDIAN_BIG
+#elif defined(__HONEYWELL_ENDIAN__)
+    #define COMPILETIME_ENDIAN ENDIAN_BIG_WORD
+#elif defined(__PDP_ENDIAN__)
+    #define COMPILETIME_ENDIAN ENDIAN_LITTLE_WORD
+#else
+    #define COMPILETIME_ENDIAN endianness()
+#endif
