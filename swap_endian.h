@@ -120,7 +120,7 @@ static __inline uint64_t swap_endian_64(uint64_t value)
     #endif
 }
 
-enum ENDIAN
+enum ENDIANNESS
 {
     ENDIAN_UNKNOWN,
     ENDIAN_BIG,
@@ -130,7 +130,7 @@ enum ENDIAN
 };
 
 /* endianness() function */
-static __inline ENDIAN endianness(void)
+static __inline ENDIANNESS endianness(void)
 {
     union
     {
@@ -153,15 +153,15 @@ static __inline ENDIAN endianness(void)
     }
 }
 
-/* COMPILETIME_ENDIAN macro */
+/* COMPILETIME_ENDIANNESS macro */
 #ifdef __LITTLE_ENDIAN__
-    #define COMPILETIME_ENDIAN ENDIAN_LITTLE
+    #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE
 #elif defined(__BIG_ENDIAN__)
-    #define COMPILETIME_ENDIAN ENDIAN_BIG
+    #define COMPILETIME_ENDIANNESS ENDIAN_BIG
 #elif defined(__HONEYWELL_ENDIAN__)
-    #define COMPILETIME_ENDIAN ENDIAN_BIG_WORD
+    #define COMPILETIME_ENDIANNESS ENDIAN_BIG_WORD
 #elif defined(__PDP_ENDIAN__)
-    #define COMPILETIME_ENDIAN ENDIAN_LITTLE_WORD
+    #define COMPILETIME_ENDIANNESS ENDIAN_LITTLE_WORD
 #else
-    #define COMPILETIME_ENDIAN endianness()
+    #define COMPILETIME_ENDIANNESS endianness()
 #endif
