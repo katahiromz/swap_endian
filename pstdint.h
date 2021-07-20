@@ -2,7 +2,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_  20 /* Version 20 */
+#define MZC4_PSTDINT_H_  21 /* Version 21 */
 
 #if __cplusplus >= 201103L /* C++11 */
     #include <cstdint>
@@ -31,21 +31,6 @@
     #else
         #include <stddef.h>
         #include <limits.h>
-    #endif
-    #ifndef INT8_MIN
-        #define INT8_MIN (-128)
-        #define INT8_MAX 127
-        #define UINT8_MAX 0xFF
-    #endif
-    #ifndef INT16_MIN
-        #define INT16_MIN (-32768)
-        #define INT16_MAX 32767
-        #define UINT16_MAX 0xFFFF
-    #endif
-    #ifndef INT32_MIN
-        #define INT32_MIN (-2147483647 - 1)
-        #define INT32_MAX 2147483647
-        #define UINT32_MAX 0xFFFFFFFF
     #endif
     typedef signed char                 int8_t;
     typedef unsigned char               uint8_t;
@@ -87,6 +72,22 @@
             #endif
         #endif
     #endif
+#endif
+
+#ifndef INT8_MIN
+    #define INT8_MIN (-128)
+    #define INT8_MAX 127
+    #define UINT8_MAX 0xFF
+#endif
+#ifndef INT16_MIN
+    #define INT16_MIN (-32768)
+    #define INT16_MAX 32767
+    #define UINT16_MAX 0xFFFF
+#endif
+#ifndef INT32_MIN
+    #define INT32_MIN (-2147483647 - 1)
+    #define INT32_MAX 2147483647
+    #define UINT32_MAX 0xFFFFFFFF
 #endif
 
 typedef char PSTDINT_TEST_01_[(sizeof(int8_t) == 1) ? 1 : -1];
