@@ -38,21 +38,19 @@
         #elif defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
             #define __PDP_ENDIAN__ 1
         #endif
-    #endif
-#endif
-
-/* Define __BI_ENDIAN__ if necessary */
-#ifndef __BI_ENDIAN__
-    #if defined(__arm__) || defined(__aarch64__)
-        #define __BI_ENDIAN__
-    #elif defined(__ppc__) || defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) || defined(_ARCH_PPC)
-        #define __BI_ENDIAN__
-    #elif defined(mips) || defined(__mips) || defined(__mips__) || defined(__MIPS__)
-        #define __BI_ENDIAN__
-    #elif defined(__alpha) || defined(__alpha__)
-        #define __BI_ENDIAN__
-    #elif defined(__sparc) || defined(__sparc__)
-        #define __BI_ENDIAN__
+    #else
+        /* Define __BI_ENDIAN__ if necessary */
+        #if defined(__arm__) || defined(__aarch64__)
+            #define __BI_ENDIAN__
+        #elif defined(__ppc__) || defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) || defined(_ARCH_PPC)
+            #define __BI_ENDIAN__
+        #elif defined(mips) || defined(__mips) || defined(__mips__) || defined(__MIPS__)
+            #define __BI_ENDIAN__
+        #elif defined(__alpha) || defined(__alpha__)
+            #define __BI_ENDIAN__
+        #elif defined(__sparc) || defined(__sparc__)
+            #define __BI_ENDIAN__
+        #endif
     #endif
 #endif
 
