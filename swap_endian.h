@@ -34,6 +34,14 @@
         #elif  (__BYTE_ORDER == __PDP_ENDIAN)
             #define __PDP_ENDIAN__ 1
         #endif
+    #elif defined(__BYTE_ORDER__)
+        #if defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+            #define __LITTLE_ENDIAN__ 1
+        #elif defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            #define __BIG_ENDIAN__ 1
+        #elif defined(__ORDER_PDP_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_PDP_ENDIAN__)
+            #define __PDP_ENDIAN__ 1
+        #endif
     #endif
 #endif
 
@@ -51,12 +59,6 @@
         #define __BIG_ENDIAN__ 1
     #elif defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB)
         #define __BIG_ENDIAN__ 1
-    #elif defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-        #define __LITTLE_ENDIAN__ 1
-    #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-        #define __BIG_ENDIAN__ 1
-    #elif defined(__BYTE_ORDER__) && defined(__ORDER_PDP_ENDIAN__) && __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
-        #define __PDP_ENDIAN__ 1
     #else
         #error Please define either __LITTLE_ENDIAN__, __BIG_ENDIAN__, __PDP_ENDIAN__, __BI_ENDIAN__ or __HONEYWELL_ENDIAN__.
     #endif
