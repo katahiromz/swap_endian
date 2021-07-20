@@ -39,7 +39,7 @@
 
 /* Finish endianness detection at compile-time */
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
-    #if defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
+    #if defined(_WIN32) || defined(__i386__) || defined(__x86_64__) || defined(__DOS__) || defined(M_I86)
         #define __LITTLE_ENDIAN__ 1
     #elif defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__)
         #define __LITTLE_ENDIAN__ 1
@@ -86,39 +86,41 @@ static __inline uint16_t swap_endian_16(uint16_t value)
     #endif
 }
 
-static __inline uint32_t swap_endian_32(uint32_t value)
-{
-    #ifdef _MSC_VER
-        return _byteswap_ulong(value);
-    #elif defined(__INTEL_COMPILER)
-        return _bswap(value);
-    #elif defined(__Apple__)
-        return Endian32_Swap(value);
-    #elif defined(__GNUC__) || defined(__clang__)
-        return __builtin_bswap32(value);
-    #else
-        const uint16_t lo = (uint16_t)value;
-        const uint16_t hi = (uint16_t)(value >> 16);
-        return (swap_endian_16(lo) << 16) | swap_endian_16(hi);
-    #endif
-}
+#if !defined(__DOS__) && !defined(M_I86)
+    static __inline uint32_t swap_endian_32(uint32_t value)
+    {
+        #ifdef _MSC_VER
+            return _byteswap_ulong(value);
+        #elif defined(__INTEL_COMPILER)
+            return _bswap(value);
+        #elif defined(__Apple__)
+            return Endian32_Swap(value);
+        #elif defined(__GNUC__) || defined(__clang__)
+            return __builtin_bswap32(value);
+        #else
+            const uint16_t lo = (uint16_t)value;
+            const uint16_t hi = (uint16_t)(value >> 16);
+            return (swap_endian_16(lo) << 16) | swap_endian_16(hi);
+        #endif
+    }
 
-static __inline uint64_t swap_endian_64(uint64_t value)
-{
-    #ifdef _MSC_VER
-        return _byteswap_uint64(value);
-    #elif defined(__INTEL_COMPILER)
-        return _bswap64(value);
-    #elif defined(__Apple__)
-        return Endian64_Swap(value);
-    #elif defined(__GNUC__) || defined(__clang__)
-        return __builtin_bswap64(value);
-    #else
-        const uint32_t lo = (uint32_t)value;
-        const uint32_t hi = (uint32_t)(value >> 32);
-        return ((uint64_t)swap_endian_32(lo) << 32) | swap_endian_32(hi);
-    #endif
-}
+    static __inline uint64_t swap_endian_64(uint64_t value)
+    {
+        #ifdef _MSC_VER
+            return _byteswap_uint64(value);
+        #elif defined(__INTEL_COMPILER)
+            return _bswap64(value);
+        #elif defined(__Apple__)
+            return Endian64_Swap(value);
+        #elif defined(__GNUC__) || defined(__clang__)
+            return __builtin_bswap64(value);
+        #else
+            const uint32_t lo = (uint32_t)value;
+            const uint32_t hi = (uint32_t)(value >> 32);
+            return ((uint64_t)swap_endian_32(lo) << 32) | swap_endian_32(hi);
+        #endif
+    }
+#endif
 
 typedef enum ENDIANNESS
 {
