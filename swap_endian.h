@@ -135,24 +135,24 @@ static __inline uint16_t swap_endian_16(uint16_t value)
     #endif
 }
 
-#if !defined(__DOS__) && !defined(M_I86)
-    static __inline uint32_t swap_endian_32(uint32_t value)
-    {
-        #ifdef _MSC_VER
-            return _byteswap_ulong(value);
-        #elif defined(__INTEL_COMPILER)
-            return _bswap(value);
-        #elif defined(__Apple__)
-            return Endian32_Swap(value);
-        #elif defined(__GNUC__) || defined(__clang__)
-            return __builtin_bswap32(value);
-        #else
-            const uint16_t lo = (uint16_t)value;
-            const uint16_t hi = (uint16_t)(value >> 16);
-            return (swap_endian_16(lo) << 16) | swap_endian_16(hi);
-        #endif
-    }
+static __inline uint32_t swap_endian_32(uint32_t value)
+{
+    #ifdef _MSC_VER
+        return _byteswap_ulong(value);
+    #elif defined(__INTEL_COMPILER)
+        return _bswap(value);
+    #elif defined(__Apple__)
+        return Endian32_Swap(value);
+    #elif defined(__GNUC__) || defined(__clang__)
+        return __builtin_bswap32(value);
+    #else
+        const uint16_t lo = (uint16_t)value;
+        const uint16_t hi = (uint16_t)(value >> 16);
+        return (swap_endian_16(lo) << 16) | swap_endian_16(hi);
+    #endif
+}
 
+#if !defined(__DOS__) && !defined(M_I86)
     static __inline uint64_t swap_endian_64(uint64_t value)
     {
         #ifdef _MSC_VER
