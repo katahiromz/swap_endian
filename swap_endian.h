@@ -18,7 +18,23 @@
     #include <machine/endian.h>
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
     #include <sys/endian.h>
-#elif defined(__arm__) || defined(__powerpc__) || defined(__powerpc64__)
+#elif defined(__arm__) || defined(__aarch64__)
+    #ifndef __BI_ENDIAN__
+        #define __BI_ENDIAN__
+    #endif
+#elif defined(__ppc__) || defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) || defined(_ARCH_PPC)
+    #ifndef __BI_ENDIAN__
+        #define __BI_ENDIAN__
+    #endif
+#elif defined(mips) || defined(__mips) || defined(__mips__) || defined(__MIPS__)
+    #ifndef __BI_ENDIAN__
+        #define __BI_ENDIAN__
+    #endif
+#elif defined(__alpha) || defined(__alpha__)
+    #ifndef __BI_ENDIAN__
+        #define __BI_ENDIAN__
+    #endif
+#elif defined(__sparc) || defined(__sparc__)
     #ifndef __BI_ENDIAN__
         #define __BI_ENDIAN__
     #endif
@@ -47,9 +63,9 @@
 
 /* Finish endianness detection at compile-time */
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__) && !defined(__BI_ENDIAN__) && !defined(__HONEYWELL_ENDIAN__)
-    #if defined(_WIN64) || defined(__x86_64__) || defined(__amd64__) || defined(_M_AMD64)
+    #if defined(_WIN64) || defined(__x86_64__) || defined(__amd64__) || defined(_M_AMD64) || defined(_M_X64)
         #define __LITTLE_ENDIAN__ 1
-    #if defined(__WINDOWS__) || defined(__WINDOWS_386__) || defined(_WIN32) || defined(__i386__)
+    #if defined(__WINDOWS__) || defined(__WINDOWS_386__) || defined(_WIN32) || defined(__i386__) || defined(_M_IX86)
         #define __LITTLE_ENDIAN__ 1
     #elif defined(__DOS__) || defined(M_I86)
         #define __LITTLE_ENDIAN__ 1
