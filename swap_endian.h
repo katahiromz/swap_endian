@@ -1,4 +1,4 @@
-/* swap_endian.h by katahiromz --- endianness-related code C/C++ collection */
+/* swap_endian.h by katahiromz --- endianness-related C/C++ code collection */
 /* See also: https://sourceforge.net/p/predef/wiki/Endianness/ */
 #pragma once
 
