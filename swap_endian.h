@@ -1,4 +1,5 @@
 /* swap_endian.h by katahiromz */
+/* See also: https://sourceforge.net/p/predef/wiki/Endianness/ */
 #pragma once
 
 /* Include <stdint.h> or something */
@@ -59,6 +60,10 @@
     #endif
 #endif
 
+/*
+ * swap_endian_8/16/32/64 inline functions
+ */
+
 static __inline uint8_t swap_endian_8(uint8_t value)
 {
     return value;
@@ -115,7 +120,6 @@ static __inline uint64_t swap_endian_64(uint64_t value)
     #endif
 }
 
-/* See also: https://sourceforge.net/p/predef/wiki/Endianness/ */
 enum ENDIAN
 {
     ENDIAN_UNKNOWN,
@@ -125,6 +129,7 @@ enum ENDIAN
     ENDIAN_LITTLE_WORD  /* Middle-endian, PDP-11 style */
 };
 
+/* endianness() function */
 static __inline ENDIAN endianness(void)
 {
     union
@@ -148,6 +153,7 @@ static __inline ENDIAN endianness(void)
     }
 }
 
+/* COMPILETIME_ENDIAN macro */
 #ifdef __LITTLE_ENDIAN__
     #define COMPILETIME_ENDIAN ENDIAN_LITTLE
 #elif defined(__BIG_ENDIAN__)
