@@ -18,24 +18,16 @@
     #include <machine/endian.h>
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
     #include <sys/endian.h>
-#elif defined(__arm__) || defined(__aarch64__)
-    #ifndef __BI_ENDIAN__
+#elif !defined(__BI_ENDIAN__)
+    #if defined(__arm__) || defined(__aarch64__)
         #define __BI_ENDIAN__
-    #endif
-#elif defined(__ppc__) || defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) || defined(_ARCH_PPC)
-    #ifndef __BI_ENDIAN__
+    #elif defined(__ppc__) || defined(__powerpc) || defined(__powerpc__) || defined(__POWERPC__) || defined(_ARCH_PPC)
         #define __BI_ENDIAN__
-    #endif
-#elif defined(mips) || defined(__mips) || defined(__mips__) || defined(__MIPS__)
-    #ifndef __BI_ENDIAN__
+    #elif defined(mips) || defined(__mips) || defined(__mips__) || defined(__MIPS__)
         #define __BI_ENDIAN__
-    #endif
-#elif defined(__alpha) || defined(__alpha__)
-    #ifndef __BI_ENDIAN__
+    #elif defined(__alpha) || defined(__alpha__)
         #define __BI_ENDIAN__
-    #endif
-#elif defined(__sparc) || defined(__sparc__)
-    #ifndef __BI_ENDIAN__
+    #elif defined(__sparc) || defined(__sparc__)
         #define __BI_ENDIAN__
     #endif
 #endif
