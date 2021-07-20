@@ -11,7 +11,7 @@
     #include "pstdint.h"
 #endif
 
-/* Include endian header or define __BIG_ENDIAN__ */
+/* Include endian header or define __BI_ENDIAN__ */
 #if defined(__linux__) || defined(__ANDROID__)
     #include <endian.h>
 #elif defined(__Apple__)
