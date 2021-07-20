@@ -13,6 +13,8 @@
     #include <endian.h>
 #elif defined(__Apple__)
     #include <machine/endian.h>
+#elif defined(__FreeBSD__) || defined(__NetBSD__)
+    #include <sys/endian.h>
 #endif
 
 #if !defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) && !defined(__PDP_ENDIAN__)
